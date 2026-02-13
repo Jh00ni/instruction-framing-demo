@@ -1,0 +1,172 @@
+{
+  "model": "ProsusAI/finbert",
+  "sentence": "Real GDP changed by -1.0% from last year.",
+  "method": "token_removal_decode",
+  "original": {
+    "top_label": "negative",
+    "top_prob": 0.592868983745575,
+    "probs": {
+      "positive": 0.3670981824398041,
+      "negative": 0.592868983745575,
+      "neutral": 0.040032751858234406
+    }
+  },
+  "results": [
+    {
+      "removed_token": "real",
+      "removed_idx": 1,
+      "text_after_removal": "gdp changed by - 1. 0 % from last year.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.6601700782775879,
+      "probs_after_removal": {
+        "positive": 0.3110913634300232,
+        "negative": 0.6601700782775879,
+        "neutral": 0.02873861789703369
+      }
+    },
+    {
+      "removed_token": "gdp",
+      "removed_idx": 2,
+      "text_after_removal": "real changed by - 1. 0 % from last year.",
+      "top_label_after_removal": "positive",
+      "top_prob_after_removal": 0.840644896030426,
+      "probs_after_removal": {
+        "positive": 0.840644896030426,
+        "negative": 0.13354305922985077,
+        "neutral": 0.025812095031142235
+      }
+    },
+    {
+      "removed_token": "changed",
+      "removed_idx": 3,
+      "text_after_removal": "real gdp by - 1. 0 % from last year.",
+      "top_label_after_removal": "positive",
+      "top_prob_after_removal": 0.5786716938018799,
+      "probs_after_removal": {
+        "positive": 0.5786716938018799,
+        "negative": 0.39322802424430847,
+        "neutral": 0.028100280091166496
+      }
+    },
+    {
+      "removed_token": "by",
+      "removed_idx": 4,
+      "text_after_removal": "real gdp changed - 1. 0 % from last year.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.7473257780075073,
+      "probs_after_removal": {
+        "positive": 0.22310608625411987,
+        "negative": 0.7473257780075073,
+        "neutral": 0.029568085446953773
+      }
+    },
+    {
+      "removed_token": "-",
+      "removed_idx": 5,
+      "text_after_removal": "real gdp changed by 1. 0 % from last year.",
+      "top_label_after_removal": "positive",
+      "top_prob_after_removal": 0.6170070171356201,
+      "probs_after_removal": {
+        "positive": 0.6170070171356201,
+        "negative": 0.3478597402572632,
+        "neutral": 0.0351332426071167
+      }
+    },
+    {
+      "removed_token": "1",
+      "removed_idx": 6,
+      "text_after_removal": "real gdp changed by -. 0 % from last year.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.6230923533439636,
+      "probs_after_removal": {
+        "positive": 0.34313786029815674,
+        "negative": 0.6230923533439636,
+        "neutral": 0.03376980870962143
+      }
+    },
+    {
+      "removed_token": ".",
+      "removed_idx": 7,
+      "text_after_removal": "real gdp changed by - 1 0 % from last year.",
+      "top_label_after_removal": "positive",
+      "top_prob_after_removal": 0.5438768863677979,
+      "probs_after_removal": {
+        "positive": 0.5438768863677979,
+        "negative": 0.4225621521472931,
+        "neutral": 0.03356097638607025
+      }
+    },
+    {
+      "removed_token": "0",
+      "removed_idx": 8,
+      "text_after_removal": "real gdp changed by - 1. % from last year.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.6221271753311157,
+      "probs_after_removal": {
+        "positive": 0.34523794054985046,
+        "negative": 0.6221271753311157,
+        "neutral": 0.032634854316711426
+      }
+    },
+    {
+      "removed_token": "%",
+      "removed_idx": 9,
+      "text_after_removal": "real gdp changed by - 1. 0 from last year.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.690566897392273,
+      "probs_after_removal": {
+        "positive": 0.2745783030986786,
+        "negative": 0.690566897392273,
+        "neutral": 0.03485484793782234
+      }
+    },
+    {
+      "removed_token": "from",
+      "removed_idx": 10,
+      "text_after_removal": "real gdp changed by - 1. 0 % last year.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.6328768730163574,
+      "probs_after_removal": {
+        "positive": 0.20960736274719238,
+        "negative": 0.6328768730163574,
+        "neutral": 0.1575157195329666
+      }
+    },
+    {
+      "removed_token": "last",
+      "removed_idx": 11,
+      "text_after_removal": "real gdp changed by - 1. 0 % from year.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.5948122143745422,
+      "probs_after_removal": {
+        "positive": 0.3079812526702881,
+        "negative": 0.5948122143745422,
+        "neutral": 0.0972064957022667
+      }
+    },
+    {
+      "removed_token": "year",
+      "removed_idx": 12,
+      "text_after_removal": "real gdp changed by - 1. 0 % from last.",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.5084226131439209,
+      "probs_after_removal": {
+        "positive": 0.4546632468700409,
+        "negative": 0.5084226131439209,
+        "neutral": 0.0369141548871994
+      }
+    },
+    {
+      "removed_token": ".",
+      "removed_idx": 13,
+      "text_after_removal": "real gdp changed by - 1. 0 % from last year",
+      "top_label_after_removal": "negative",
+      "top_prob_after_removal": 0.4930073022842407,
+      "probs_after_removal": {
+        "positive": 0.4726996123790741,
+        "negative": 0.4930073022842407,
+        "neutral": 0.034293051809072495
+      }
+    }
+  ]
+}

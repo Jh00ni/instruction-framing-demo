@@ -297,84 +297,106 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 <hr>
 
-  <h2 style="margin:0 0 6px;">Part II — Under the Hood</h2>
-  <p class="small" style="margin:0;">
+<h2 style="margin:0 0 6px;">Part II — Under the Hood</h2>
+<p class="small" style="margin:0;">
   To understand why a single character can change a prediction, we need to look at how the model represents text internally.
 </p>
 
-  <!-- 5) Tokens + Attention -->
-  <div class="card" id="q5">
-    <div class="pill">3/5 — What the model sees</div>
-    <h2>What does the model actually see?</h2>
+<!-- 5) Tokens + Attention -->
+<div class="card" id="q5">
+  <div class="pill">3/5 — What the model sees</div>
+  <h2>What does the model actually see?</h2>
 
-<div class="small">
-  <strong>Question 3:</strong> Why can a single character (like “-” in -1.0%) change the model’s classification?
-</div>
-
-<p class="small">
-  Models process token sequences (subwords/symbols), not “words” in the human sense.
-</p>
-
-    <div class="sentence"><strong>Tokenization of Sentence B</strong> (“Real GDP changed by -1.0% from last year.”)</div>
-
-    <button class="btn" onclick="reveal('tokOut')">Show tokens</button>
-
-    <div class="reveal" id="tokOut">
-      <!-- Replace these chips with your real tokenizer output if you want -->
-      <div class="tokenWrap" aria-label="tokens">
-        <span class="tok dim">real</span>
-        <span class="tok dim">gdp</span>
-        <span class="tok dim">changed</span>
-        <span class="tok dim">by</span>
-        <span class="tok hl">-</span>
-        <span class="tok dim">1</span>
-        <span class="tok dim">.</span>
-        <span class="tok dim">0</span>
-        <span class="tok dim">%</span>
-        <span class="tok dim">from</span>
-        <span class="tok dim">last</span>
-        <span class="tok dim">year</span>
-      </div>
-
-      <div class="note">The minus sign is a separate token in many tokenizers, changing the input representation.</div>
-
-      <hr>
-
-      <div class="sentence"><strong>Tokenization of Sentence A</strong> (“Real GDP changed by 1.0% from last year.”)</div>
-      <div class="tokenWrap">
-        <span class="tok dim">real</span>
-        <span class="tok dim">gdp</span>
-        <span class="tok dim">changed</span>
-        <span class="tok dim">by</span>
-        <span class="tok dim">1</span>
-        <span class="tok dim">.</span>
-        <span class="tok dim">0</span>
-        <span class="tok dim">%</span>
-        <span class="tok dim">from</span>
-        <span class="tok dim">last</span>
-        <span class="tok dim">year</span>
-      </div>
-
-      <!-- Attention Heatmap Block -->
-      <hr>
-
-      <h3 style="margin: 0 0 8px;">Attention heatmap (illustrative)</h3>
-      <p class="small" style="margin-top:0;">
-        FinBERT has 12 transformer layers with 12 attention heads per layer. This visualization shows one head from the final layer. Different heads specialize in different structural or semantic patterns, so this is only a partial view of the model’s internal dynamics.
-      </p>
-
-      <div class="sentence"><strong>Sentence:</strong> <span id="att_sentence"></span></div>
-
-      <button class="btn" onclick="toggleAttention()">Reveal attention heatmap</button>
-
-      <div id="att_block" class="reveal" style="display:none;">
-        <div class="small" id="att_meta"></div>
-        <div id="att_plot" style="width:100%; height:520px; margin-top:10px;"></div>
-        <div class="note" id="att_note"></div>
-      </div>
-      <!-- /Attention Heatmap Block -->
-    </div>
+  <div class="small">
+    <strong>Question 3:</strong> Why can a single character (like “-” in -1.0%) change the model’s classification?
   </div>
+
+  <p class="small">
+    Models process token sequences (subwords/symbols), not “words” in the human sense.
+  </p>
+
+  <div class="sentence"><strong>Tokenization of Sentence B</strong> (“Real GDP changed by -1.0% from last year.”)</div>
+
+  <button class="btn" onclick="reveal('tokOut')">Show tokens</button>
+
+  <div class="reveal" id="tokOut">
+    <!-- Replace these chips with your real tokenizer output if you want -->
+    <div class="tokenWrap" aria-label="tokens">
+      <span class="tok dim">real</span>
+      <span class="tok dim">gdp</span>
+      <span class="tok dim">changed</span>
+      <span class="tok dim">by</span>
+      <span class="tok hl">-</span>
+      <span class="tok dim">1</span>
+      <span class="tok dim">.</span>
+      <span class="tok dim">0</span>
+      <span class="tok dim">%</span>
+      <span class="tok dim">from</span>
+      <span class="tok dim">last</span>
+      <span class="tok dim">year</span>
+    </div>
+
+    <div class="note">The minus sign is a separate token in many tokenizers, changing the input representation.</div>
+
+    <hr>
+
+    <div class="sentence"><strong>Tokenization of Sentence A</strong> (“Real GDP changed by 1.0% from last year.”)</div>
+    <div class="tokenWrap">
+      <span class="tok dim">real</span>
+      <span class="tok dim">gdp</span>
+      <span class="tok dim">changed</span>
+      <span class="tok dim">by</span>
+      <span class="tok dim">1</span>
+      <span class="tok dim">.</span>
+      <span class="tok dim">0</span>
+      <span class="tok dim">%</span>
+      <span class="tok dim">from</span>
+      <span class="tok dim">last</span>
+      <span class="tok dim">year</span>
+    </div>
+
+    <!-- Attention Heatmap Block -->
+    <hr>
+
+    <h3 style="margin: 0 0 8px;">Attention heatmap (illustrative)</h3>
+    <p class="small" style="margin-top:0;">
+      FinBERT has 12 transformer layers with 12 attention heads per layer. This visualization shows one head from the final layer.
+      Different heads specialize in different structural or semantic patterns, so this is only a partial view of the model’s internal dynamics.
+    </p>
+
+    <div class="sentence"><strong>Sentence:</strong> <span id="att_sentence"></span></div>
+
+    <button class="btn" onclick="toggleAttention()">Reveal attention heatmap</button>
+
+    <div id="att_block" class="reveal" style="display:none;">
+      <div class="small" id="att_meta"></div>
+      <div id="att_plot" style="width:100%; height:520px; margin-top:10px;"></div>
+      <div class="note" id="att_note"></div>
+    </div>
+    <!-- /Attention Heatmap Block -->
+
+
+
+    <!-- Masking (Token Impact) Heatmap Block -->
+  <hr>
+
+  <h3 style="margin: 0 0 8px;">Token removal impact heatmap (remove-one-token test)</h3>
+  <p class="small" style="margin-top:0;">
+    We remove one token at a time, decode back to text, and rerun FinBERT.
+    Color = top label after removal (red/blue/grey). Brightness = top probability.
+  </p>
+
+  <button class="btn" onclick="toggleRemoval()">Reveal token removal heatmap</button>
+
+  <div id="mask_block" class="reveal" style="display:none;">
+    <div class="small" id="mask_meta"></div>
+    <div id="mask_plot" style="width:100%; height:260px; margin-top:10px;"></div>
+    <div class="note" id="mask_note"></div>
+  </div>
+    <!-- /Masking (Token Impact) Heatmap Block -->
+
+  </div>
+</div>
 
 <script>
   function reveal(id){
@@ -389,9 +411,10 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
     if (!res.ok) throw new Error(`HTTP ${res.status} loading attention.json`);
     const data = await res.json();
 
-    document.getElementById("att_sentence").textContent = data.sentence;
+    document.getElementById("att_sentence").textContent = data.sentence || "";
     document.getElementById("att_meta").textContent =
-      `Model: ${data.model} | Layer: ${data.layer} | Head: ${data.head} | Tokens: ${data.tokens.length}`;
+      `Model: ${data.model} | Layer: ${data.layer} | Head: ${data.head} | Tokens: ${data.tokens?.length ?? 0}`;
+
     document.getElementById("att_note").innerHTML = data.note || "";
 
     const traceHeat = {
@@ -399,46 +422,20 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
       z: data.attention,
       x: data.tokens,
       y: data.tokens,
-      hovertemplate: "From: %{y}<br>To: %{x}<br>Attn (row-norm): %{z:.4f}<extra></extra>"
+      hovertemplate: "From: %{y}<br>To: %{x}<br>Attn: %{z:.4f}<extra></extra>"
     };
 
-    // Optional highlight: row/col outlines for highlight_index (e.g., "-" token)
-    const shapes = [];
-    const hi = data.highlight_index;
-
-    if (Number.isInteger(hi) && hi >= 0 && hi < data.tokens.length) {
-      const tok = data.tokens[hi];
-
-      shapes.push({
-        type: "rect",
-        xref: "x",
-        yref: "y",
-        x0: tok, x1: tok,
-        y0: data.tokens[0], y1: data.tokens[data.tokens.length - 1],
-        line: { width: 3 },
-        fillcolor: "rgba(0,0,0,0)"
-      });
-
-      shapes.push({
-        type: "rect",
-        xref: "x",
-        yref: "y",
-        x0: data.tokens[0], x1: data.tokens[data.tokens.length - 1],
-        y0: tok, y1: tok,
-        line: { width: 3 },
-        fillcolor: "rgba(0,0,0,0)"
-      });
-    }
-
-    const layout = {
-      margin: { l: 120, r: 20, t: 10, b: 140 },
-      xaxis: { tickangle: 45, automargin: true },
-      yaxis: { automargin: true },
-      height: 520,
-      shapes
-    };
-
-    Plotly.newPlot("att_plot", [traceHeat], layout, { displayModeBar: false, responsive: true });
+    Plotly.newPlot(
+      "att_plot",
+      [traceHeat],
+      {
+        margin: { l: 120, r: 20, t: 10, b: 140 },
+        xaxis: { tickangle: 45, automargin: true },
+        yaxis: { automargin: true },
+        height: 520
+      },
+      { displayModeBar: false, responsive: true }
+    );
   }
 
   function toggleAttention() {
@@ -450,11 +447,137 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
       window.__attLoaded = true;
       loadAttention().catch(err => {
         document.getElementById("att_plot").innerHTML =
-          "<p style='color:#a00;'>Failed to load attention.json. Make sure it is in the same folder as index.html (repo root for GitHub Pages).</p>";
+          "<p style='color:#a00;'>Failed to load attention.json. Make sure it is in the same folder as index.html and served via http:// (not file://).</p>";
         console.error(err);
       });
     }
   }
+
+
+  // Removal loading + rendering (expects removal.json in the same folder)
+ async function loadRemoval() {
+  const res = await fetch("removal.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status} loading removal.json`);
+  const data = await res.json();
+
+  const results = data.results || [];
+  const n = results.length;
+
+  const tokens = results.map(r => String(r.removed_token ?? ""));
+  const labels = results.map(r => String(r.top_label_after_removal ?? ""));
+  const probs  = results.map(r => Number(r.top_prob_after_removal ?? 0));
+
+  function colorFor(label, conf) {
+    const l = String(label || "").toLowerCase();
+    const c = Math.max(0, Math.min(1, Number(conf) || 0)); // clamp 0..1
+
+    let base;
+    if (l === "negative") base = [220, 38, 38];       // red
+    else if (l === "positive") base = [37, 99, 235];  // blue
+    else base = [150, 150, 150];                      // grey
+
+    const rr = Math.round(base[0] * c);
+    const gg = Math.round(base[1] * c);
+    const bb = Math.round(base[2] * c);
+    return `rgb(${rr},${gg},${bb})`;
+  }
+
+  // colored rectangles as shapes (prevents label overlap)
+  const shapes = tokens.map((_, i) => ({
+    type: "rect",
+    xref: "x",
+    yref: "y",
+    x0: i - 0.5,
+    x1: i + 0.5,
+    y0: 0,
+    y1: 1,
+    fillcolor: colorFor(labels[i], probs[i]),
+    line: { width: 0 }
+  }));
+
+  // token labels below the bar
+const annotations = tokens.map((t, i) => ({
+  x: i - 0.2,          // ← shift right
+  y: -0.35,
+  xref: "x",
+  yref: "y",
+  text: String(t).replace(/</g, "&lt;").replace(/>/g, "&gt;"),
+  showarrow: false,
+  textangle: 45,
+  xanchor: "left",      // ← anchor on left side
+  font: { size: 12, color: "#111" }
+}));
+
+  // invisible hover targets
+  const hoverTrace = {
+    type: "scatter",
+    mode: "markers",
+    x: [...Array(n).keys()],
+    y: Array(n).fill(0.5),
+    marker: { size: 40, opacity: 0 },
+    customdata: results.map(r => ([
+      r.removed_token,
+      r.top_label_after_removal,
+      r.top_prob_after_removal,
+      r.text_after_removal,
+      r.probs_after_removal?.positive,
+      r.probs_after_removal?.negative,
+      r.probs_after_removal?.neutral
+    ])),
+    hovertemplate:
+      "<b>Removed token</b>: %{customdata[0]}<br>" +
+      "<b>Top label</b>: %{customdata[1]}<br>" +
+      "<b>Top prob</b>: %{customdata[2]:.3f}<br>" +
+      "<b>Text after removal</b>: %{customdata[3]}<br>" +
+      "P(pos): %{customdata[4]:.3f} | P(neg): %{customdata[5]:.3f} | P(neu): %{customdata[6]:.3f}" +
+      "<extra></extra>",
+    showlegend: false
+  };
+
+  document.getElementById("mask_meta").textContent =
+    `Model: ${data.model} | Method: token removal (decode + rerun) | Original: ${data.original?.top_label} (${(data.original?.top_prob ?? 0).toFixed(3)})`;
+
+  document.getElementById("mask_note").textContent =
+    `Red = Negative | Blue = Positive | Grey = Neutral | Brightness = top probability`;
+
+  const layout = {
+    shapes,
+    annotations,
+    xaxis: {
+      range: [-0.5, n - 0.5],
+      showgrid: false,
+      zeroline: false,
+      showticklabels: false
+    },
+yaxis: {
+  range: [-0.55, 1.05],   // <- more space below
+  showgrid: false,
+  zeroline: false,
+  showticklabels: false
+},
+margin: { l: 80, r: 20, t: 10, b: 150 } // <- more bottom padding
+  };
+
+  Plotly.newPlot("mask_plot", [hoverTrace], layout, {
+    displayModeBar: false,
+    responsive: true
+  });
+}
+
+function toggleRemoval() {
+  const el = document.getElementById("mask_block");
+  const isHidden = (el.style.display === "none" || el.style.display === "");
+  el.style.display = isHidden ? "block" : "none";
+
+  if (isHidden && !window.__removalLoaded) {
+    window.__removalLoaded = true;
+    loadRemoval().catch(err => {
+      document.getElementById("mask_plot").innerHTML =
+        "<p style='color:#a00;'>Failed to load removal.json. Make sure it is in the same folder as index.html and served via http:// (not file://).</p>";
+      console.error(err);
+    });
+  }
+}
 </script>
 
 
