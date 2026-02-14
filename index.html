@@ -221,6 +221,45 @@ All original code written by the author.
   padding-right: 18px;
   margin: 28px 0 18px;
 }
+/* Embeddings table */
+.tbl{
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.tbl th, .tbl td{
+  text-align: left;
+  padding: 10px 12px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+.tbl th{
+  background: var(--panel);
+  font-weight: 700;
+}
+.tbl tr:first-child td{ border-top: none; }
+.tbl code{
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+  font-size: 13px;
+}
+.tbl .hlRow{
+  background: #fff6d1;
+}
+.embIntro{
+  font-size: 17px;      /* try 17–19 */
+  color: var(--text);
+  font-weight: 600;
+  margin: 14px 0 8px;
+}
+.embIntro span{
+  font-weight: 800;     /* makes “Embeddings:” pop */
+}
+
+
   </style>
 
   <!-- Plotly for the attention heatmap -->
@@ -311,8 +350,10 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
     <strong>Question 3:</strong> Why can a single character (like “-” in -1.0%) change the model’s classification?
   </div>
 
+  <br>
+
   <p class="small">
-    Models process token sequences (subwords/symbols), not “words” in the human sense.
+    Tokenization: The sentence is split into tokens (subwords and symbols). For example, the minus sign “-” becomes its own token.
   </p>
 
   <div class="sentence"><strong>Tokenization of Sentence B</strong> (“Real GDP changed by -1.0% from last year.”)</div>
@@ -321,42 +362,67 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
   <div class="reveal" id="tokOut">
     <!-- Replace these chips with your real tokenizer output if you want -->
-    <div class="tokenWrap" aria-label="tokens">
-      <span class="tok dim">real</span>
-      <span class="tok dim">gdp</span>
-      <span class="tok dim">changed</span>
-      <span class="tok dim">by</span>
-      <span class="tok hl">-</span>
-      <span class="tok dim">1</span>
-      <span class="tok dim">.</span>
-      <span class="tok dim">0</span>
-      <span class="tok dim">%</span>
-      <span class="tok dim">from</span>
-      <span class="tok dim">last</span>
-      <span class="tok dim">year</span>
-    </div>
+    <div class="tokenWrap" aria-label="tokens-b">
+  <span class="tok dim">[CLS]</span>
+  <span class="tok dim">real</span>
+  <span class="tok dim">gdp</span>
+  <span class="tok dim">changed</span>
+  <span class="tok dim">by</span>
+  <span class="tok hl">-</span>
+  <span class="tok dim">1</span>
+  <span class="tok dim">.</span>
+  <span class="tok dim">0</span>
+  <span class="tok dim">%</span>
+  <span class="tok dim">from</span>
+  <span class="tok dim">last</span>
+  <span class="tok dim">year</span>
+  <span class="tok dim">.</span>
+  <span class="tok dim">[SEP]</span>
+</div>
 
-    <div class="note">The minus sign is a separate token in many tokenizers, changing the input representation.</div>
-
-    <hr>
+<hr>
 
     <div class="sentence"><strong>Tokenization of Sentence A</strong> (“Real GDP changed by 1.0% from last year.”)</div>
-    <div class="tokenWrap">
-      <span class="tok dim">real</span>
-      <span class="tok dim">gdp</span>
-      <span class="tok dim">changed</span>
-      <span class="tok dim">by</span>
-      <span class="tok dim">1</span>
-      <span class="tok dim">.</span>
-      <span class="tok dim">0</span>
-      <span class="tok dim">%</span>
-      <span class="tok dim">from</span>
-      <span class="tok dim">last</span>
-      <span class="tok dim">year</span>
-    </div>
+    <div class="tokenWrap" aria-label="tokens-a">
+  <span class="tok dim">[CLS]</span>
+  <span class="tok dim">real</span>
+  <span class="tok dim">gdp</span>
+  <span class="tok dim">changed</span>
+  <span class="tok dim">by</span>
+  <span class="tok dim">1</span>
+  <span class="tok dim">.</span>
+  <span class="tok dim">0</span>
+  <span class="tok dim">%</span>
+  <span class="tok dim">from</span>
+  <span class="tok dim">last</span>
+  <span class="tok dim">year</span>
+  <span class="tok dim">.</span>
+  <span class="tok dim">[SEP]</span>
+</div>
 
-    <!-- Attention Heatmap Block -->
-    <hr>
+
+<hr>
+
+<p class="embIntro">
+  <span>Embeddings:</span> internally, the model converts each token into a numeric vector that represents meaning.
+</p>
+
+
+
+<button class="btn" onclick="toggleEmbeddings()">Show embeddings</button>
+
+<div id="emb_block" class="reveal" style="display:none;">
+  <h3 style="margin: 0 0 8px;">Token embeddings (first 4 of 768 dimensions)</h3>
+  <p class="small" style="margin-top:0;">
+    Each token is mapped to a 768-dimensional numeric vector. Below show only the first 4 values.
+  </p>
+  <div class="small" id="emb_meta"></div>
+  <div id="emb_table"></div>
+  <div class="note">Highlighted row shows the <code>-</code> token.</div>
+</div>
+
+
+<hr>
 
     <h3 style="margin: 0 0 8px;">Attention heatmap (illustrative)</h3>
     <p class="small" style="margin-top:0;">
@@ -373,11 +439,7 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
       <div id="att_plot" style="width:100%; height:520px; margin-top:10px;"></div>
       <div class="note" id="att_note"></div>
     </div>
-    <!-- /Attention Heatmap Block -->
 
-
-
-    <!-- Masking (Token Impact) Heatmap Block -->
   <hr>
 
   <h3 style="margin: 0 0 8px;">Token removal impact heatmap (remove-one-token test)</h3>
@@ -399,11 +461,68 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 </div>
 
 <script>
-  function reveal(id){
-    const el = document.getElementById(id);
-    if(!el) return;
-    el.style.display = (el.style.display === "block") ? "none" : "block";
+function reveal(id){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.style.display = (el.style.display === "block") ? "none" : "block";
+}
+
+function toggleEmbeddings(){
+  const el = document.getElementById("emb_block");
+  const isHidden = (el.style.display === "none" || el.style.display === "");
+  el.style.display = isHidden ? "block" : "none";
+
+  // load embeddings only once, the first time user opens it
+  if (isHidden && !window.__embLoaded) {
+    window.__embLoaded = true;
+    loadEmbeddingsB().catch(err => {
+      document.getElementById("emb_table").innerHTML =
+        "<p style='color:#a00;'>Failed to load embeddings_sentenceB.json. Put it next to index.html and serve via http:// (not file://).</p>";
+      console.error(err);
+    });
   }
+}
+
+  async function loadEmbeddingsB() {
+    const res = await fetch("embeddings_sentenceB.json", { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP ${res.status} loading embeddings_sentenceB.json`);
+    const data = await res.json();
+
+    // meta line
+    document.getElementById("emb_meta").textContent =
+      `Model: ${data.model} | Tokens: ${data.rows?.length ?? 0}`;
+
+    // build table
+    const rows = data.rows || [];
+    let html = `
+      <table class="tbl" aria-label="token-embeddings">
+        <thead>
+          <tr>
+            <th style="width:160px;">token</th>
+            <th>embedding (first 4 of 768 dims)</th>
+          </tr>
+        </thead>
+        <tbody>
+    `;
+
+    for (const r of rows) {
+      const tok = String(r.token ?? "");
+      const vec = (r.embedding_preview || []).map(v => Number(v).toFixed(3));
+      const vecStr = `[ ${vec.join(", ")}, … ]`;
+
+      const isMinus = (tok === "-");
+      html += `
+        <tr class="${isMinus ? "hlRow" : ""}">
+          <td><code>${tok.replace(/</g,"&lt;").replace(/>/g,"&gt;")}</code></td>
+          <td><code>${vecStr}</code></td>
+        </tr>
+      `;
+    }
+
+    html += `</tbody></table>`;
+    document.getElementById("emb_table").innerHTML = html;
+  }
+
 
   // Attention loading + rendering (expects attention.json in the same folder)
   async function loadAttention() {

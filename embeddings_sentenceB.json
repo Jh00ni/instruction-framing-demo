@@ -1,0 +1,172 @@
+{
+  "model": "ProsusAI/finbert",
+  "sentence": "Real GDP changed by -1.0% from last year.",
+  "embedding_description": "Token embeddings (first 4 of 768 dimensions; ellipsis indicates omitted values)",
+  "rows": [
+    {
+      "token": "[CLS]",
+      "embedding_preview": [
+        0.161,
+        -0.257,
+        -0.301,
+        -0.112
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "real",
+      "embedding_preview": [
+        0.358,
+        0.508,
+        0.188,
+        -0.057
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "gdp",
+      "embedding_preview": [
+        -0.898,
+        -0.442,
+        0.487,
+        -0.163
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "changed",
+      "embedding_preview": [
+        0.534,
+        0.039,
+        0.568,
+        0.678
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "by",
+      "embedding_preview": [
+        -0.034,
+        0.067,
+        0.737,
+        0.315
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "-",
+      "embedding_preview": [
+        0.158,
+        -0.083,
+        0.156,
+        -0.217
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "1",
+      "embedding_preview": [
+        0.511,
+        0.052,
+        0.121,
+        -1.448
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": ".",
+      "embedding_preview": [
+        -0.209,
+        0.116,
+        0.032,
+        -0.38
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "0",
+      "embedding_preview": [
+        -0.441,
+        -0.484,
+        0.167,
+        -1.377
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "%",
+      "embedding_preview": [
+        0.045,
+        -0.497,
+        -0.886,
+        -0.356
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "from",
+      "embedding_preview": [
+        -0.302,
+        0.608,
+        0.188,
+        0.552
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "last",
+      "embedding_preview": [
+        -0.034,
+        0.237,
+        0.24,
+        0.138
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "year",
+      "embedding_preview": [
+        0.791,
+        0.619,
+        -0.406,
+        1.167
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": ".",
+      "embedding_preview": [
+        -0.553,
+        0.446,
+        0.103,
+        -0.086
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    },
+    {
+      "token": "[SEP]",
+      "embedding_preview": [
+        -0.327,
+        0.23,
+        0.067,
+        0.259
+      ],
+      "ellipsis": true,
+      "total_dims": 768
+    }
+  ]
+}
