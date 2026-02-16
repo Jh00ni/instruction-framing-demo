@@ -406,8 +406,9 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 <hr>
 
+<h3>Embeddings (meaning in numbers)</h3>
+
 <p class="explain">
-  <strong>Embeddings (meaning in numbers):</strong>
   The model turns each token into a long list of numbers (here: 768 numbers).
   These numbers place the token in a “meaning space”, where similar words end up near each other.
 </p>
@@ -427,7 +428,7 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 
 <hr>
-<h3>Attention heatmap (illustrative)</h3>
+<h3>Attention (heatmap)</h3>
 <p class="explain">
   <strong>What this shows:</strong>
   how the model “looks around” at other tokens to decide what is important for understanding the sentence.
@@ -448,7 +449,32 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
     </div>
 
 
-  <hr>
+ 
+
+<hr>
+
+<h3 style="margin: 0 0 8px;">Feed-forward activity (heatmap)</h3>
+<p class="small" style="margin-top:0;">
+  After attention, each layer refines the token representations.
+This heatmap shows how much each token is changed inside the model.
+
+<br> 
+
+Attention decides what to look at; feed-forward layers decide how to change the meaning.
+
+</p>
+
+<button class="btn" onclick="toggleFFN()">Reveal FFN heatmap</button>
+
+<div id="ffn_block" class="reveal" style="display:none;">
+  <div class="small" id="ffn_meta"></div>
+  <div id="ffn_plot" style="width:100%; height:520px; margin-top:10px;"></div>
+  <div class="note" id="ffn_note"></div>
+</div>
+
+<hr>
+
+<h3 style="margin: 0 0 8px;">Model summary</h3>
 
 <button class="btn" onclick="toggleFlow()" aria-expanded="false">
   How the model makes its decision ▾
@@ -475,8 +501,9 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
   <h3 style="margin: 0 0 8px;"> Sensitivity check: which words drive the result? (remove-one-token test)</h3>
   <p class="small" style="margin-top:0;">
-    We remove one token at a time, decode back to text, and rerun FinBERT.
-    Color = top label after removal (red/blue/grey). Brightness = top probability.
+    We remove one token at a time, decode back to text, and rerun FinBERT.<br><br>
+    Color = top label after removal (red/blue/grey).<br>
+    Brightness = top probability.
   </p>
 
   <button class="btn" onclick="toggleRemoval()">Reveal token removal heatmap</button>
@@ -743,6 +770,53 @@ function toggleFlow(){
   btn.setAttribute("aria-expanded", isHidden);
 }
 
+async function loadFFN() {
+  const res = await fetch("ffn_heatmap_sentenceB.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status} loading ffn_heatmap_sentenceB.json`);
+  const data = await res.json();
+
+  document.getElementById("ffn_meta").textContent =
+    `Model: ${data.model} | Layers: ${data.layers?.length ?? 0} | Tokens: ${data.tokens?.length ?? 0}`;
+
+  document.getElementById("ffn_note").textContent = data.note || "";
+
+  const trace = {
+    type: "heatmap",
+    z: data.heat,      // [layers][tokens]
+    x: data.tokens,
+    y: data.layers,
+    hovertemplate: "Layer: %{y}<br>Token: %{x}<br>FFN strength: %{z:.4f}<extra></extra>"
+  };
+
+  Plotly.newPlot(
+    "ffn_plot",
+    [trace],
+    {
+      margin: { l: 70, r: 20, t: 10, b: 140 },
+      xaxis: { tickangle: 45, automargin: true },
+      yaxis: { automargin: true },
+      height: 520
+    },
+    { displayModeBar: false, responsive: true }
+  );
+}
+
+function toggleFFN() {
+  const el = document.getElementById("ffn_block");
+  const isHidden = (el.style.display === "none" || el.style.display === "");
+  el.style.display = isHidden ? "block" : "none";
+
+  if (isHidden && !window.__ffnLoaded) {
+    window.__ffnLoaded = true;
+    loadFFN().catch(err => {
+      document.getElementById("ffn_plot").innerHTML =
+        "<p style='color:#a00;'>Failed to load ffn_heatmap_sentenceB.json. Make sure it is next to index.html and served via http:// (not file://).</p>";
+      console.error(err);
+    });
+  }
+}
+
+
 </script>
 
 
@@ -757,7 +831,7 @@ Unlike a classifier, it generates text and can be instructed to adopt a specific
 
  <!-- 4) Role / instruction clarity (Llama) -->
 <div class="card" id="q4">
-  <div class="pill">4/5 — Large Language Model (Llama)</div>
+  <div class="pill">4/5 — Roles in LLM (Llama-3.1-8B-Instruct)</div>
   <h2>Does role instruction change interpretation?</h2>
 
   <div class="sentence">
