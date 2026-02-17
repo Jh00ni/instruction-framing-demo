@@ -455,11 +455,11 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 <h3 style="margin: 0 0 8px;">Feed-forward activity (heatmap)</h3>
 <p class="small" style="margin-top:0;">
-  After attention, each layer updates <b>how strongly it processes each word on its own.</b>.<br>
-  This heatmap shows how active the feed-forward part of the model is for each word at each step.
+  After attention, each layer updates <b>how strongly it processes each token on its own</b>.<br>
+  This heatmap shows how active the feed-forward part of the model is for each token at each step.
   <br><br>
-  Attention decides which words influence each other.
-  The feed-forward layers focus on refining each word’s meaning individually.
+  Attention decides which tokens influence each other.
+  The feed-forward layers focus on refining each token’s meaning individually.
 </p>
 
 <button class="btn" onclick="toggleFFN()">Reveal FFN heatmap</button>
