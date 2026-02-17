@@ -239,5 +239,5 @@
     ]
   ],
   "metric": "L2 norm of FFN output (post-FFN, 768d)",
-  "note": "Red areas show where the model is “thinking harder” about a word or symbol as it builds its understanding of the sentence. Lower layers read text, middle layers build meaning, upper layers prepare the final decision."
+  "note": "Higher value = stronger feed-forward transformation for that token at that layer."
 }
