@@ -1,0 +1,121 @@
+{
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "sentence": "Inflation remains uncomfortably high.",
+  "system_text": "Classifier mode (plain prompt, not chat template). Task: choose exactly one of Positive, Neutral, Negative and output only one word.",
+  "user_text": "Sentence: \"Inflation remains uncomfortably high.\"",
+  "prompt": "Classify the tone of the sentence as exactly one of: Positive, Neutral, Negative.\nOutput only one word.\n\nSentence: \"Inflation remains uncomfortably high.\"\nLabel:",
+  "generated_label": "Negative",
+  "label_token_info": {
+    "Positive": {
+      "label_text": " Positive",
+      "token_ids": [
+        45003
+      ],
+      "first_token_id": 45003,
+      "first_token_str": " Positive",
+      "is_single_token": true
+    },
+    "Neutral": {
+      "label_text": " Neutral",
+      "token_ids": [
+        59794
+      ],
+      "first_token_id": 59794,
+      "first_token_str": " Neutral",
+      "is_single_token": true
+    },
+    "Negative": {
+      "label_text": " Negative",
+      "token_ids": [
+        51957
+      ],
+      "first_token_id": 51957,
+      "first_token_str": " Negative",
+      "is_single_token": true
+    }
+  },
+  "sentence_token_span": {
+    "tokens": [
+      "Inflation",
+      "remains",
+      "uncomfortably",
+      "high"
+    ]
+  },
+  "scores": {
+    "logits": {
+      "Positive": 15.9453125,
+      "Neutral": 17.265625,
+      "Negative": 18.46875
+    },
+    "probs_over_labels": {
+      "Positive": 0.058085549622774124,
+      "Neutral": 0.21750667691230774,
+      "Negative": 0.7244077920913696
+    },
+    "predicted_label_among_candidates": "Negative",
+    "negative_margin_vs_best_other": 1.203125
+  },
+  "top_next_tokens": [
+    {
+      "token_id": 51957,
+      "token": " Negative",
+      "prob": 0.6594609022140503
+    },
+    {
+      "token_id": 59794,
+      "token": " Neutral",
+      "prob": 0.19800607860088348
+    },
+    {
+      "token_id": 45003,
+      "token": " Positive",
+      "prob": 0.05287788063287735
+    },
+    {
+      "token_id": 220,
+      "token": " ",
+      "prob": 0.01870746724307537
+    },
+    {
+      "token_id": 8389,
+      "token": " negative",
+      "prob": 0.007921239361166954
+    },
+    {
+      "token_id": 85165,
+      "token": " NEG",
+      "prob": 0.007677528541535139
+    },
+    {
+      "token_id": 330,
+      "token": " \"",
+      "prob": 0.006315362639725208
+    },
+    {
+      "token_id": 578,
+      "token": " The",
+      "prob": 0.004443412646651268
+    },
+    {
+      "token_id": 328,
+      "token": " S",
+      "prob": 0.0028024252969771624
+    },
+    {
+      "token_id": 1252,
+      "token": " Un",
+      "prob": 0.00245388550683856
+    },
+    {
+      "token_id": 720,
+      "token": " \n",
+      "prob": 0.0018093816470354795
+    },
+    {
+      "token_id": 21277,
+      "token": " neutral",
+      "prob": 0.0017953009810298681
+    }
+  ]
+}

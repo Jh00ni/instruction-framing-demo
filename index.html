@@ -262,6 +262,36 @@ All original code written by the author.
 #flow_block li {
   margin-bottom: 6px;
 }
+.barTrack{
+  width: 100%;
+  height: 12px;
+  background: #eee;
+  border-radius: 999px;
+  overflow: hidden;
+}
+.barFill{
+  height: 100%;
+  background: #111;
+}
+.kpiCol{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+  margin-top:10px;
+}
+.kpiCol span{
+  display:inline-block;
+  border:1px solid var(--line);
+  background:#fff;
+  border-radius:10px;
+  padding:8px 10px;
+  font-size:15px;
+}
+.llamaTokenBox{
+  max-height: 220px;
+  overflow: auto;
+  padding-right: 4px;
+}
 
   </style>
 
@@ -285,7 +315,7 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
   <!-- 1) Human classification: Sentence A -->
 <div class="card" id="q1">
-  <div class="pill">1/5 — Sentence classification</div>
+  <div class="pill">1/7 — Sentence classification</div>
   <h2>Sentence A:</h2>
   <div class="sentence">"Real GDP changed by 1.0% from last year."</div>
 
@@ -311,7 +341,7 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 <!-- 2) Human classification: Sentence B -->
 <div class="card" id="q2">
-  <div class="pill">2/5 — Sentence classification</div>
+  <div class="pill">2/7 — Sentence classification</div>
   <h2>Sentence B:</h2>
   <div class="sentence">"Real GDP changed by <strong>-</strong>1.0% from last year."</div>
 
@@ -346,7 +376,7 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 <!-- 5) Tokens + Attention -->
 <div class="card" id="q5">
-  <div class="pill">3/5 — What the model sees</div>
+  <div class="pill">3/7 — What the model sees</div>
   <h2>What does the FinBERT actually see?</h2>
 
   <div class="small">
@@ -533,6 +563,28 @@ function reveal(id){
   el.style.display = (el.style.display === "block") ? "none" : "block";
 }
 
+function cleanTok(t){
+  let s = String(t ?? "");
+
+  // Common tokenizer markers
+  s = s.replace(/Ġ/g, " ");   // leading-space marker
+  s = s.replace(/Ċ/g, "↵");   // newline marker
+
+  // Hide chat-template special tokens entirely
+  if (/^<\|.*\|>$/.test(s)) return "[special]";
+
+  // Remove angle brackets safely for HTML display
+  s = s.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+  // Collapse repeated whitespace
+  s = s.replace(/\s+/g, " ").trim();
+
+  // Make empty labels visible
+  if (!s) return "[blank]";
+
+  return s;
+}
+
 function toggleEmbeddings(){
   const el = document.getElementById("emb_block");
   const isHidden = (el.style.display === "none" || el.style.display === "");
@@ -602,13 +654,15 @@ function toggleEmbeddings(){
 
     document.getElementById("att_note").innerHTML = data.note || "";
 
-    const traceHeat = {
-      type: "heatmap",
-      z: data.attention,
-      x: data.tokens,
-      y: data.tokens,
-      hovertemplate: "From: %{y}<br>To: %{x}<br>Attn: %{z:.4f}<extra></extra>"
-    };
+    const tokens = (data.tokens || []).map(cleanTok);
+
+const traceHeat = {
+  type: "heatmap",
+  z: data.attention,
+  x: tokens,
+  y: tokens,
+  hovertemplate: "From: %{y}<br>To: %{x}<br>Attention: %{z:.4f}<extra></extra>"
+};
 
     Plotly.newPlot(
       "att_plot",
@@ -825,6 +879,195 @@ function toggleFFN() {
 }
 
 
+async function loadLlamaOverview() {
+  const res = await fetch("llama_classifier_overview.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status} loading llama_classifier_overview.json`);
+  const data = await res.json();
+
+  document.getElementById("llama_overview_meta").textContent =
+    `Model: ${data.model} | Generated label: ${data.generated_label}`;
+
+  document.getElementById("llama_system_text").textContent = data.system_text || "";
+  document.getElementById("llama_user_text").textContent = data.user_text || "";
+
+  const probs = data.scores?.probs_over_labels || {};
+  const logits = data.scores?.logits || {};
+  const pred = data.scores?.predicted_label_among_candidates || "";
+
+  const scoreHtml = `
+    <span class="${pred === "Positive" ? "best" : ""}">
+      Positive: <strong>${Number(probs.Positive ?? 0).toFixed(3)}</strong>
+      <br><span class="small">logit ${Number(logits.Positive ?? 0).toFixed(3)}</span>
+    </span>
+    <span class="${pred === "Neutral" ? "best" : ""}">
+      Neutral: <strong>${Number(probs.Neutral ?? 0).toFixed(3)}</strong>
+      <br><span class="small">logit ${Number(logits.Neutral ?? 0).toFixed(3)}</span>
+    </span>
+    <span class="${pred === "Negative" ? "best" : ""}">
+      Negative: <strong>${Number(probs.Negative ?? 0).toFixed(3)}</strong>
+      <br><span class="small">logit ${Number(logits.Negative ?? 0).toFixed(3)}</span>
+    </span>
+  `;
+  document.getElementById("llama_overview_scores").innerHTML = scoreHtml;
+
+  const top = data.top_next_tokens || [];
+  let topHtml = `
+    <table class="tbl" aria-label="llama-top-next-tokens">
+      <thead>
+        <tr>
+          <th style="width:90px;">rank</th>
+          <th style="width:180px;">token</th>
+          <th>probability</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  top.forEach((r, i) => {
+   const token = cleanTok(r.token ?? "");
+    topHtml += `
+      <tr>
+        <td>${i + 1}</td>
+        <td><code>${token}</code></td>
+        <td>${Number(r.prob ?? 0).toFixed(4)}</td>
+      </tr>
+    `;
+  });
+
+  topHtml += `</tbody></table>`;
+  document.getElementById("llama_top_tokens").innerHTML = topHtml;
+}
+
+function toggleLlamaOverview() {
+  const el = document.getElementById("llama_overview_block");
+  const isHidden = (el.style.display === "none" || el.style.display === "");
+  el.style.display = isHidden ? "block" : "none";
+
+  if (isHidden && !window.__llamaOverviewLoaded) {
+    window.__llamaOverviewLoaded = true;
+    loadLlamaOverview().catch(err => {
+      document.getElementById("llama_overview_block").innerHTML =
+        "<p style='color:#a00;'>Failed to load llama_classifier_overview.json.</p>";
+      console.error(err);
+    });
+  }
+}
+
+async function loadLlamaAttention() {
+  const res = await fetch("llama_attention_classifier.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status} loading llama_attention_classifier.json`);
+  const data = await res.json();
+
+  document.getElementById("llama_att_meta").textContent =
+    `Model: ${data.model} | Layer: ${data.layer} | Head: ${data.head} | Tokens: ${data.tokens?.length ?? 0}`;
+
+  document.getElementById("llama_att_note").textContent = data.note || "";
+
+  const tokens = (data.tokens || []).map(cleanTok);
+
+  const traceHeat = {
+    type: "heatmap",
+    z: data.attention,
+    x: tokens,
+    y: tokens,
+    hovertemplate: "From: %{y}<br>To: %{x}<br>Attention: %{z:.4f}<extra></extra>"
+  };
+
+  Plotly.newPlot(
+    "llama_att_plot",
+    [traceHeat],
+    {
+      margin: { l: 120, r: 20, t: 10, b: 140 },
+      xaxis: { tickangle: 45, automargin: true },
+      yaxis: { automargin: true },
+      height: 520
+    },
+    { displayModeBar: false, responsive: true }
+  );
+}
+
+function toggleLlamaAttention() {
+  const el = document.getElementById("llama_att_block");
+  const isHidden = (el.style.display === "none" || el.style.display === "");
+  el.style.display = isHidden ? "block" : "none";
+
+  if (isHidden && !window.__llamaAttLoaded) {
+    window.__llamaAttLoaded = true;
+    loadLlamaAttention().catch(err => {
+      document.getElementById("llama_att_plot").innerHTML =
+        "<p style='color:#a00;'>Failed to load llama_attention_classifier.json.</p>";
+      console.error(err);
+    });
+  }
+}
+
+async function loadLlamaContrib() {
+  const res = await fetch("llama_contributions_classifier.json", { cache: "no-store" });
+  if (!res.ok) throw new Error(`HTTP ${res.status} loading llama_contributions_classifier.json`);
+  const data = await res.json();
+
+  const results = (data.results || []).slice();
+
+  document.getElementById("llama_contrib_meta").textContent =
+    `Model: ${data.model} | Target: ${data.target} | Tokens: ${results.length}`;
+
+  document.getElementById("llama_contrib_note").textContent =
+    "Higher bars mean the word contributes more to the model’s Negative classification.";
+
+  const sorted = results
+    .filter(r => typeof r.contribution_to_negative === "number")
+    .sort((a, b) => b.contribution_to_negative - a.contribution_to_negative);
+
+  const top = sorted.slice(0, 12);
+
+  const x = top.map(r => Number(r.contribution_to_negative)).reverse();
+  const y = top.map(r => cleanTok(r.token ?? "")).reverse();
+
+  const trace = {
+    type: "bar",
+    x,
+    y,
+    orientation: "h",
+    hovertemplate:
+      "Word: %{y}<br>" +
+      "Contribution: %{x:.4f}<extra></extra>"
+  };
+
+  Plotly.newPlot(
+    "llama_contrib_plot",
+    [trace],
+    {
+      margin: { l: 150, r: 30, t: 10, b: 60 },
+      xaxis: {
+        title: "Contribution to P(Negative)",
+        zeroline: true,
+        showgrid: true
+      },
+      yaxis: {
+        automargin: true,
+        tickfont: { size: 13 }
+      },
+      height: 340
+    },
+    { displayModeBar: false, responsive: true }
+  );
+}
+
+function toggleLlamaContrib() {
+  const el = document.getElementById("llama_contrib_block");
+  const isHidden = (el.style.display === "none" || el.style.display === "");
+  el.style.display = isHidden ? "block" : "none";
+
+  if (isHidden && !window.__llamaContribLoaded) {
+    window.__llamaContribLoaded = true;
+    loadLlamaContrib().catch(err => {
+      document.getElementById("llama_contrib_plot").innerHTML =
+        "<p style='color:#a00;'>Failed to load llama_contributions_classifier.json.</p>";
+      console.error(err);
+    });
+  }
+}
+
 </script>
 
 
@@ -839,7 +1082,7 @@ Unlike a classifier, it generates text and can be instructed to adopt a specific
 
  <!-- 4) Role / instruction clarity (Llama) -->
 <div class="card" id="q4">
-  <div class="pill">4/5 — Roles in LLM (Llama-3.1-8B-Instruct)</div>
+  <div class="pill">4/7 — Roles in LLM (Llama-3.1-8B-Instruct)</div>
   <h2>Does role instruction change interpretation?</h2>
 
   <div class="sentence">
@@ -919,7 +1162,7 @@ Policy implications: The Central Bank may consider tightening monetary policy to
 
 <!-- 5) From role to agent with validation (Llama runs multiple times) -->
 <div class="card" id="q5">
-  <div class="pill">5/5 — From Role to Agent</div>
+  <div class="pill">5/7 — From Role to Agent</div>
   <h2>What if Llama validates its own answer before finalizing?</h2>
 
   <div class="sentence">
@@ -1013,6 +1256,103 @@ ISSUES: None</div>
     </div>
   </div>
 </div>
+
+<hr>
+
+<h2 style="margin-top:10px;">Part IV — Llama interpretability (classifier mode)</h2>
+<p class="small" style="margin-top:4px;">
+For interpretability, we temporarily force Llama into a simple classification task:
+<strong>Positive</strong>, <strong>Neutral</strong>, or <strong>Negative</strong>.
+This makes it easier to inspect both <strong>attention</strong> and <strong>estimated token contributions</strong>.
+</p>
+
+<div class="card" id="llamaInterp1">
+  <div class="pill">6/7 — Llama as a classifier</div>
+  <h2>What label does Llama choose?</h2>
+
+  <div class="sentence">
+    Sentence: “Inflation remains uncomfortably high.”
+  </div>
+
+  <div class="small">
+    Here Llama is instructed to output exactly one label only:
+    <strong>Positive</strong>, <strong>Neutral</strong>, or <strong>Negative</strong>.
+  </div>
+
+  <button class="btn" onclick="toggleLlamaOverview()">Reveal classifier output</button>
+
+<div id="llama_overview_block" class="reveal" style="display:none;">
+
+  <h3 style="margin:0 0 8px;">Prompt used</h3>
+  <div class="grid2">
+    <div class="promptBlock">
+      <div class="promptHdr">
+        <div class="title">SYSTEM</div>
+        <span class="tag">classifier mode</span>
+      </div>
+      <div class="mono" id="llama_system_text"></div>
+    </div>
+
+    <div class="promptBlock">
+      <div class="promptHdr">
+        <div class="title">USER</div>
+        <span class="tag">input sentence</span>
+      </div>
+      <div class="mono" id="llama_user_text"></div>
+    </div>
+  </div>
+
+  <hr>
+
+  <div class="small" id="llama_overview_meta"></div>
+
+  <div class="kpiCol" id="llama_overview_scores"></div>
+
+  <hr>
+
+  <h3 style="margin:0 0 8px;">Top next-token candidates</h3>
+  <div id="llama_top_tokens"></div>
+
+    <div class="note">
+      The chart above compares the model’s next-token probabilities for the classifier output.
+      This is much cleaner to analyze than free-form text generation.
+    </div>
+  </div>
+</div>
+
+<div class="card" id="llamaInterp2">
+  <div class="pill">7/7 — Attention + contribution analysis</div>
+  <h2>Which parts of the input matter most?</h2>
+
+  <div class="small" style="line-height:1.5;">
+    We inspect two different views:
+    <br><br>
+    <strong>Attention:</strong> where the model appears to focus in one selected head.
+    <br>
+    <strong>Estimated contribution:</strong> how much each word supports the <strong>Negative</strong> label in a leave-one-out test.
+  </div>
+
+  <br>
+
+  <button class="btn" onclick="toggleLlamaAttention()">Reveal Llama attention</button>
+  <button class="btn" onclick="toggleLlamaContrib()" style="margin-left:8px;">Reveal token contributions</button>
+
+  <div id="llama_att_block" class="reveal" style="display:none;">
+    <h3 style="margin:0 0 8px;">Attention heatmap</h3>
+    <div class="small" id="llama_att_meta"></div>
+    <div id="llama_att_plot" style="width:100%; height:520px; margin-top:10px;"></div>
+    <div class="note" id="llama_att_note"></div>
+  </div>
+
+<div id="llama_contrib_block" class="reveal" style="display:none;">
+  <h3 style="margin:0 0 8px;">Word contributions to the “Negative” label</h3>
+  <div class="small" id="llama_contrib_meta"></div>
+
+  <div id="llama_contrib_plot" style="width:100%; height:420px; margin-top:10px;"></div>
+
+  <div class="note" id="llama_contrib_note"></div>
+</div>
+
 
   <hr>
   <p class="small">

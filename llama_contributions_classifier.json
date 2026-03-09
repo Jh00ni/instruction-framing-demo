@@ -1,0 +1,135 @@
+{
+  "model": "meta-llama/Llama-3.1-8B-Instruct",
+  "sentence": "Inflation remains uncomfortably high.",
+  "prompt": "Classify the tone of the sentence as exactly one of: Positive, Neutral, Negative.\nOutput only one word.\n\nSentence: \"Inflation remains uncomfortably high.\"\nLabel:",
+  "target": "Probability of Negative at the first generated token",
+  "tokens": [
+    "Inflation",
+    "remains",
+    "uncomfortably",
+    "high"
+  ],
+  "results": [
+    {
+      "position_in_word_span": 0,
+      "token": "Inflation",
+      "contribution_to_negative": -0.027829229831695557
+    },
+    {
+      "position_in_word_span": 1,
+      "token": "remains",
+      "contribution_to_negative": -0.017041325569152832
+    },
+    {
+      "position_in_word_span": 2,
+      "token": "uncomfortably",
+      "contribution_to_negative": 0.34260931611061096
+    },
+    {
+      "position_in_word_span": 3,
+      "token": "high",
+      "contribution_to_negative": 0.06079810857772827
+    }
+  ],
+  "token_level_results": [
+    {
+      "position_in_sentence_token_span": 0,
+      "position_in_full_prompt": 26,
+      "token_id": 644,
+      "token": "In",
+      "negative_prob_without_token": 0.7825886011123657,
+      "contribution_to_negative": -0.058180809020996094,
+      "predicted_label_without_token": "Negative",
+      "probs_without_token": {
+        "Positive": 0.04279225319623947,
+        "Neutral": 0.17461912333965302,
+        "Negative": 0.7825886011123657
+      }
+    },
+    {
+      "position_in_sentence_token_span": 1,
+      "position_in_full_prompt": 27,
+      "token_id": 65249,
+      "token": "flation",
+      "negative_prob_without_token": 0.6940562129020691,
+      "contribution_to_negative": 0.030351579189300537,
+      "predicted_label_without_token": "Negative",
+      "probs_without_token": {
+        "Positive": 0.06980306655168533,
+        "Neutral": 0.23614072799682617,
+        "Negative": 0.6940562129020691
+      }
+    },
+    {
+      "position_in_sentence_token_span": 2,
+      "position_in_full_prompt": 28,
+      "token_id": 8625,
+      "token": "Ġremains",
+      "negative_prob_without_token": 0.7414491176605225,
+      "contribution_to_negative": -0.017041325569152832,
+      "predicted_label_without_token": "Negative",
+      "probs_without_token": {
+        "Positive": 0.05584997311234474,
+        "Neutral": 0.2027008980512619,
+        "Negative": 0.7414491176605225
+      }
+    },
+    {
+      "position_in_sentence_token_span": 3,
+      "position_in_full_prompt": 29,
+      "token_id": 27824,
+      "token": "Ġuncomfort",
+      "negative_prob_without_token": 0.4482335150241852,
+      "contribution_to_negative": 0.27617427706718445,
+      "predicted_label_without_token": "Negative",
+      "probs_without_token": {
+        "Positive": 0.2437003254890442,
+        "Neutral": 0.30806609988212585,
+        "Negative": 0.4482335150241852
+      }
+    },
+    {
+      "position_in_sentence_token_span": 4,
+      "position_in_full_prompt": 30,
+      "token_id": 2915,
+      "token": "ably",
+      "negative_prob_without_token": 0.6579727530479431,
+      "contribution_to_negative": 0.06643503904342651,
+      "predicted_label_without_token": "Negative",
+      "probs_without_token": {
+        "Positive": 0.06774333119392395,
+        "Neutral": 0.27428385615348816,
+        "Negative": 0.6579727530479431
+      }
+    },
+    {
+      "position_in_sentence_token_span": 5,
+      "position_in_full_prompt": 31,
+      "token_id": 1579,
+      "token": "Ġhigh",
+      "negative_prob_without_token": 0.6636096835136414,
+      "contribution_to_negative": 0.06079810857772827,
+      "predicted_label_without_token": "Negative",
+      "probs_without_token": {
+        "Positive": 0.0884174332022667,
+        "Neutral": 0.24797281622886658,
+        "Negative": 0.6636096835136414
+      }
+    },
+    {
+      "position_in_sentence_token_span": 6,
+      "position_in_full_prompt": 32,
+      "token_id": 10246,
+      "token": ".\"Ċ",
+      "negative_prob_without_token": 0.29286667704582214,
+      "contribution_to_negative": 0.4315411150455475,
+      "predicted_label_without_token": "Positive",
+      "probs_without_token": {
+        "Positive": 0.38798531889915466,
+        "Neutral": 0.3191480338573456,
+        "Negative": 0.29286667704582214
+      }
+    }
+  ],
+  "note": "Leave-one-out contributions aggregated from token pieces to word level for readability. Positive value means the word increases the model's probability of Negative."
+}
