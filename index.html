@@ -313,13 +313,44 @@ The following examples use a fine-tuned FinBERT (110 M parameters).<br>
 The model outputs probabilistic classifications: <strong>Positive</strong>, <strong>Neutral</strong>, or <strong>Negative</strong>.
 </p>
 
+<div class="card" id="q0">
+  <div class="pill">1/8 — Basic sentiment classification</div>
+  <h2><h2>Basic sentiment classification</h2></h2>
+
+  <div class="sentence">"Unemployment remains uncomfortably high."</div>
+
+  <div class="small"><strong>Question 1:</strong> What is the tone of this sentence?</div>
+  <div class="options">
+    <label class="opt"><input type="radio" name="sent0" value="Positive">Positive</label>
+    <label class="opt"><input type="radio" name="sent0" value="Neutral">Neutral</label>
+    <label class="opt"><input type="radio" name="sent0" value="Negative">Negative</label>
+  </div>
+
+  <button class="btn" onclick="reveal('out0')">Reveal model output</button>
+
+  <div class="reveal" id="out0">
+    <h3>FinBERT output (precomputed)</h3>
+    <div class="kpi">
+      <span class="best">Negative: <strong>0.954</strong></span>
+      <span>Positive: <strong>0.022</strong></span>
+      <span>Neutral: <strong>0.024</strong></span>
+    </div>
+    <div class="note">
+      This simple warm-up sets the stage: FinBERT reacts strongly to sentiment-bearing words such as
+      <strong>uncomfortably</strong>.
+    </div>
+  </div>
+</div>
+
+
+
   <!-- 1) Human classification: Sentence A -->
 <div class="card" id="q1">
-  <div class="pill">1/7 — Sentence classification</div>
+  <div class="pill">2/8 — Sentence classification</div>
   <h2>Sentence A:</h2>
   <div class="sentence">"Real GDP changed by 1.0% from last year."</div>
 
-  <div class="small"><strong>Question 1:</strong> What is the tone of this sentence?</div>
+  <div class="small"><strong>Question 2:</strong> What is the tone of this sentence?</div>
   <div class="options">
     <label class="opt"><input type="radio" name="sentA" value="Positive">Positive</label>
     <label class="opt"><input type="radio" name="sentA" value="Neutral">Neutral</label>
@@ -341,11 +372,11 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 <!-- 2) Human classification: Sentence B -->
 <div class="card" id="q2">
-  <div class="pill">2/7 — Sentence classification</div>
+  <div class="pill">3/8 — Sentence classification</div>
   <h2>Sentence B:</h2>
   <div class="sentence">"Real GDP changed by <strong>-</strong>1.0% from last year."</div>
 
-  <div class="small"><strong>Question 2:</strong> What is the tone of this sentence?</div>
+  <div class="small"><strong>Question 3:</strong> What is the tone of this sentence?</div>
 
   <div class="options">
     <label class="opt"><input type="radio" name="sentB" value="Positive">Positive</label>
@@ -376,11 +407,11 @@ The model outputs probabilistic classifications: <strong>Positive</strong>, <str
 
 <!-- 5) Tokens + Attention -->
 <div class="card" id="q5">
-  <div class="pill">3/7 — What the model sees</div>
+  <div class="pill">4/8 — What the model sees</div>
   <h2>What does the FinBERT actually see?</h2>
 
   <div class="small">
-    <strong>Question 3:</strong> Why can a single character (like “-” in -1.0%) change the model’s classification?
+    <strong>Question 4:</strong> Why can a single character (like “-” in -1.0%) change the model’s classification?
   </div>
 
   <br>
@@ -1082,7 +1113,7 @@ Unlike a classifier, it generates text and can be instructed to adopt a specific
 
  <!-- 4) Role / instruction clarity (Llama) -->
 <div class="card" id="q4">
-  <div class="pill">4/7 — Roles in LLM (Llama-3.1-8B-Instruct)</div>
+  <div class="pill">5/8 — Roles in LLM (Llama-3.1-8B-Instruct)</div>
   <h2>Does role instruction change interpretation?</h2>
 
   <div class="sentence">
@@ -1090,7 +1121,7 @@ Unlike a classifier, it generates text and can be instructed to adopt a specific
   </div>
 
   <div class="small" style="margin-top:6px; line-height:1.5;">
-    <strong>Question 4:</strong>
+    <strong>Question 5:</strong>
     If we instruct Llama to act as a <strong>Senior ECB economist writing a briefing note for the Governor</strong>,
     does its interpretation change?
   </div>
@@ -1162,7 +1193,7 @@ Policy implications: The Central Bank may consider tightening monetary policy to
 
 <!-- 5) From role to agent with validation (Llama runs multiple times) -->
 <div class="card" id="q5">
-  <div class="pill">5/7 — From Role to Agent</div>
+  <div class="pill">6/8 — From Role to Agent</div>
   <h2>What if Llama validates its own answer before finalizing?</h2>
 
   <div class="sentence">
@@ -1267,7 +1298,7 @@ This makes it easier to inspect both <strong>attention</strong> and <strong>esti
 </p>
 
 <div class="card" id="llamaInterp1">
-  <div class="pill">6/7 — Llama as a classifier</div>
+  <div class="pill">7/8 — Llama as a classifier</div>
   <h2>What label does Llama choose?</h2>
 
   <div class="sentence">
@@ -1288,7 +1319,7 @@ This makes it easier to inspect both <strong>attention</strong> and <strong>esti
     <div class="promptBlock">
       <div class="promptHdr">
         <div class="title">SYSTEM</div>
-        <span class="tag">classifier mode</span>
+        <span class="tag">Classifier mode</span>
       </div>
       <div class="mono" id="llama_system_text"></div>
     </div>
@@ -1296,7 +1327,7 @@ This makes it easier to inspect both <strong>attention</strong> and <strong>esti
     <div class="promptBlock">
       <div class="promptHdr">
         <div class="title">USER</div>
-        <span class="tag">input sentence</span>
+        <span class="tag">Input sentence</span>
       </div>
       <div class="mono" id="llama_user_text"></div>
     </div>
@@ -1321,7 +1352,7 @@ This makes it easier to inspect both <strong>attention</strong> and <strong>esti
 </div>
 
 <div class="card" id="llamaInterp2">
-  <div class="pill">7/7 — Attention + contribution analysis</div>
+  <div class="pill">8/8 — Attention + contribution analysis</div>
   <h2>Which parts of the input matter most?</h2>
 
   <div class="small" style="line-height:1.5;">
